@@ -1,0 +1,54 @@
+<?php
+class ManagerClass
+{
+    private $db;
+
+    public function __construct()
+    {
+        $this->db = new DBClass();
+    }
+
+    public function getAccount($email) {
+        $account = $this->getAccounts("email", $email);
+        $account['transactions'] = $this->getTransactions($email);
+        return $account;
+    }
+
+    private function getTransactions($email) {
+        $accountClass = new AccountClass($email);
+        $transactions = $accountClass->getAllTransactions();
+        return $this->prepareTransactions($transactions);
+    }
+
+    public function getAccounts($key = "", $value = "") {
+        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn");
+        foreach ($accounts as &$item) {
+            $item['balance'] = Coin::toCoin(($item['received'])*SWAP_FACTOR);
+            $item['received'] /= 1e8;
+            $item['withdrawn'] /= 1e8;
+        }
+        return $accounts;
+    }
+
+    public function getWithdrawal($id) {
+        return $this->db->getRows(WITHDRAWALS_TABLE, 'id', $id);
+    }
+
+    public function getWithdrawals($status) {
+        if(!is_numeric($status)) {
+            throw new Exception('Invalid status');
+        }
+        $withdrawals = $this->db->getRows(WITHDRAWALS_TABLE, 'status', $status);
+        return $this->prepareTransactions($withdrawals);
+    }
+
+    private function prepareTransactions($withdrawals) {
+        foreach ($withdrawals as &$item) {
+            $status = $item['status'];
+            $time = $item['time'];
+            $item['status'] = getTransactionStatus($status);
+            $item['time'] = gdate($time);
+        }
+        return $withdrawals;
+    }
+}
