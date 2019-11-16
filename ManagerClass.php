@@ -22,12 +22,28 @@ class ManagerClass
 
     public function getAccounts($key = "", $value = "") {
         $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn");
-        foreach ($accounts as &$item) {
-            $item['balance'] = Coin::toCoin(($item['received'])*SWAP_FACTOR);
-            $item['received'] /= 1e8;
-            $item['withdrawn'] /= 1e8;
+        $arr = array();
+        $balance = 0;
+        foreach ($accounts as $item) {
+            if(!empty($item['received'])) {
+                $received = $item['received'];
+                $userBalance = Coin::toCoin($received);
+                if($userBalance > 1) {
+                    $balance += $received;
+                    array_push(
+                        $arr,
+                        array(
+                            'email' => $item['email'],
+                            'received' => $userBalance,
+                            'balance' => $userBalance * SWAP_FACTOR,
+                            'withdrawn' => Coin::toCoin($item['withdrawn'])
+                        )
+                    );
+                }
+            }
         }
-        return $accounts;
+        array_push($arr, Coin::toCoin($balance));
+        return $arr;
     }
 
     public function getWithdrawal($id) {
