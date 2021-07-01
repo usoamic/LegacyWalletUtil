@@ -34,7 +34,7 @@ class MailerClass {
 
         $body = "Hello!<br>
                  Someone has requested a 2fa key reset.<br>
-                 If you didn't request this, please urgently write to support@usoamic.io";
+                 If you didn't request this, please urgently write to support@usoamic.io.";
 
         if(!$this->sendMail($email, $subject, $body))
         {
