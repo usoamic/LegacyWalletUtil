@@ -49,6 +49,9 @@ try {
         case "get_withdrawals":
             print_r($managerClass->getWithdrawals($argv[2]));
             break;
+        case "reset_2fa":
+            print_r($managerClass->resetTfa($argv[2]));
+            break;
         default:
             println('Invalid command');
     }

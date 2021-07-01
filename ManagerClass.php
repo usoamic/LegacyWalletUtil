@@ -1,11 +1,15 @@
 <?php
+
 class ManagerClass
 {
     private $db;
+    private $ga;
+    private $mailer;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->db = new DBClass();
+        $this->ga = new GoogleAuthenticator();
+        $this->mailer = new MailerClass();
     }
 
     public function getAccount($email) {
@@ -58,6 +62,21 @@ class ManagerClass
         return $this->prepareTransactions($withdrawals);
     }
 
+    public function resetTfa($email) {
+        $accountClass = new AccountClass($email);
+
+        $this->mailer->sendResetTfaMail($email);
+
+        if (!$accountClass->getTfa()->isEnabled()) {
+            throw new Exception("2FA is disabled for $email");
+        }
+
+        $secretKey = $this->getUserData($email, "secret_key")['secret_key'];
+        $code = $this->ga->getCode($secretKey);
+
+        return $accountClass->tfaAction($code);
+    }
+
     private function prepareTransactions($withdrawals) {
         foreach ($withdrawals as &$item) {
             $status = $item['status'];
@@ -66,5 +85,10 @@ class ManagerClass
             $item['time'] = gdate($time);
         }
         return $withdrawals;
+    }
+
+    private function getUserData($email, $columns = '*')
+    {
+        return $this->db->getRow(USERS_TABLE, 'email', $email, $columns);
     }
 }
