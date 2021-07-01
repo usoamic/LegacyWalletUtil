@@ -77,6 +77,12 @@ class ManagerClass
         return $accountClass->tfaAction($code);
     }
 
+
+    public function replaceMail($oldEmail, $newMail) {
+        $this->db->updateValueInKey(USERS_TABLE, 'email', $oldEmail, $newMail);
+        return "Mail replaced from $oldEmail to $newMail";
+    }
+
     private function prepareTransactions($withdrawals) {
         foreach ($withdrawals as &$item) {
             $status = $item['status'];

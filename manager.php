@@ -1,6 +1,4 @@
 <?php
-
-
 require_once("defines.php");
 require_once("php/other/consts.php");
 require_once("php/libs/cfunctions.php");
@@ -45,6 +43,14 @@ try {
             break;
         case "reset_2fa":
             print_r($managerClass->resetTfa($argv[2]));
+            break;
+        case "replace_mail":
+            print_r(
+                $managerClass->replaceMail(
+                    $argv[2],
+                    $argv[3]
+                )
+            );
             break;
         default:
             println('Invalid command');
