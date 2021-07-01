@@ -1,11 +1,15 @@
 <?php
+
 class ManagerClass
 {
     private $db;
+    private $tfa;
+    private $mailer;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->db = new DBClass();
+        $this->tfa = new TFAClass();
+        $this->mailer = new MailerClass();
     }
 
     public function getAccount($email) {
@@ -21,7 +25,7 @@ class ManagerClass
     }
 
     public function getAccounts($key = "", $value = "") {
-        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn");
+        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn tfa_status");
         $arr = array();
         $balance = 0;
         foreach ($accounts as $item) {
@@ -36,6 +40,7 @@ class ManagerClass
                             'email' => $item['email'],
                             'received' => $userBalance,
                             'balance' => $userBalance * SWAP_FACTOR,
+                            'tfa_status' => $item["tfa_status"],
                             'withdrawn' => Coin::toCoin($item['withdrawn'])
                         )
                     );
@@ -58,6 +63,27 @@ class ManagerClass
         return $this->prepareTransactions($withdrawals);
     }
 
+    public function resetTfa($email) {
+        $accountClass = new AccountClass($email);
+
+        $this->mailer->sendResetTfaMail($email);
+
+        if (!$accountClass->getTfa()->isEnabled()) {
+            throw new Exception("2FA is disabled for $email");
+        }
+
+        $secretKey = $this->getUserData($email, "secret_key")['secret_key'];
+        $code = $this->tfa->getCode($secretKey);
+
+        return $accountClass->tfaAction($code);
+    }
+
+
+    public function replaceMail($oldEmail, $newMail) {
+        $this->db->updateValueInKey(USERS_TABLE, 'email', $oldEmail, $newMail);
+        return "Mail replaced from $oldEmail to $newMail";
+    }
+
     private function prepareTransactions($withdrawals) {
         foreach ($withdrawals as &$item) {
             $status = $item['status'];
@@ -66,5 +92,10 @@ class ManagerClass
             $item['time'] = gdate($time);
         }
         return $withdrawals;
+    }
+
+    private function getUserData($email, $columns = '*')
+    {
+        return $this->db->getRow(USERS_TABLE, 'email', $email, $columns);
     }
 }

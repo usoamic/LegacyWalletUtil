@@ -28,6 +28,22 @@ class MailerClass {
         return true;
     }
 
+    public function sendResetTfaMail($email)
+    {
+        $subject = SITE_TITLE." 2FA reset";
+
+        $body = "Hello!<br>
+                 Someone has requested a 2fa key reset.<br>
+                 If you didn't request this, please urgently write to support@usoamic.io.";
+
+        if(!$this->sendMail($email, $subject, $body))
+        {
+            die_redirect();
+            return false;
+        }
+        return true;
+    }
+
     public function sendLoginMail($email, $ip, $browserData) {
         $subject = "Successful login to ".SITE_TITLE;
         $browser = get_if_not_empty($browserData['name'])." ".$browserData['version'];
