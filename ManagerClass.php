@@ -25,7 +25,7 @@ class ManagerClass
     }
 
     public function getAccounts($key = "", $value = "") {
-        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn");
+        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn tfa_status");
         $arr = array();
         $balance = 0;
         foreach ($accounts as $item) {
@@ -40,6 +40,7 @@ class ManagerClass
                             'email' => $item['email'],
                             'received' => $userBalance,
                             'balance' => $userBalance * SWAP_FACTOR,
+                            'tfa_status' => $item["tfa_status"],
                             'withdrawn' => Coin::toCoin($item['withdrawn'])
                         )
                     );
