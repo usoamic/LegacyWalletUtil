@@ -26,7 +26,8 @@ try {
                 'get_account EMAIL',
                 'get_accounts',
                 'get_withdrawal ID',
-                'get_withdrawals STATUS {TX_PENDING = 1}, {TX_CONFIRMED = 2}, {TX_REJECTED = 3}'
+                'get_withdrawals STATUS {TX_PENDING = 1}, {TX_CONFIRMED = 2}, {TX_REJECTED = 3}',
+                'reset_2fa EMAIL'
             );
             print_r($helpArr);
             break;
