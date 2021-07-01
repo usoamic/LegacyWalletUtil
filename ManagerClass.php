@@ -3,12 +3,12 @@
 class ManagerClass
 {
     private $db;
-    private $ga;
+    private $tfa;
     private $mailer;
 
     public function __construct() {
         $this->db = new DBClass();
-        $this->ga = new GoogleAuthenticator();
+        $this->tfa = new TFAClass();
         $this->mailer = new MailerClass();
     }
 
@@ -72,7 +72,7 @@ class ManagerClass
         }
 
         $secretKey = $this->getUserData($email, "secret_key")['secret_key'];
-        $code = $this->ga->getCode($secretKey);
+        $code = $this->tfa->getCode($secretKey);
 
         return $accountClass->tfaAction($code);
     }
