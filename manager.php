@@ -62,6 +62,7 @@ try {
         default:
             println('Invalid command');
     }
+    print_r("\n");
 }
 catch (Exception $e) {
     println('error: '.$e->getMessage());
