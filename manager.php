@@ -26,7 +26,8 @@ try {
                 'get_withdrawal ID',
                 'get_withdrawals STATUS {TX_PENDING = 1}, {TX_CONFIRMED = 2}, {TX_REJECTED = 3}',
                 'reset_2fa EMAIL',
-                'replace_mail OLD_EMAIL NEW_EMAIL'
+                'replace_mail OLD_EMAIL NEW_EMAIL',
+                'count_balances'
             );
             print_r($helpArr);
             break;
@@ -51,6 +52,11 @@ try {
                     $argv[2],
                     $argv[3]
                 )
+            );
+            break;
+        case "count_balances":
+            print_r(
+                $managerClass->countBalances()
             );
             break;
         default:
