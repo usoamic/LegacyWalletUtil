@@ -1,5 +1,5 @@
 <?php
-require_once("defines.php");
+require_once("php/other/defines.php");
 require_once("php/other/consts.php");
 require_once("php/libs/cfunctions.php");
 require_once("php/libs/Telegram.php");
