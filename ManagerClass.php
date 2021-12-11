@@ -84,6 +84,17 @@ class ManagerClass
         return "Mail replaced from $oldEmail to $newMail";
     }
 
+    public function countBalances() {
+        $accounts = $this->getAccounts();
+        $allBalance = 0.0;
+
+        foreach ($accounts as $account) {
+            $allBalance += $account['balance'];
+        }
+
+        return $allBalance;
+    }
+
     private function prepareTransactions($withdrawals) {
         foreach ($withdrawals as &$item) {
             $status = $item['status'];

@@ -1,5 +1,5 @@
 <?php
-require_once("defines.php");
+require_once("php/other/defines.php");
 require_once("php/other/consts.php");
 require_once("php/libs/cfunctions.php");
 require_once("php/libs/Telegram.php");
@@ -26,7 +26,8 @@ try {
                 'get_withdrawal ID',
                 'get_withdrawals STATUS {TX_PENDING = 1}, {TX_CONFIRMED = 2}, {TX_REJECTED = 3}',
                 'reset_2fa EMAIL',
-                'replace_mail OLD_EMAIL NEW_EMAIL'
+                'replace_mail OLD_EMAIL NEW_EMAIL',
+                'count_balances'
             );
             print_r($helpArr);
             break;
@@ -53,9 +54,15 @@ try {
                 )
             );
             break;
+        case "count_balances":
+            print_r(
+                $managerClass->countBalances()
+            );
+            break;
         default:
             println('Invalid command');
     }
+    print_r("\n");
 }
 catch (Exception $e) {
     println('error: '.$e->getMessage());
