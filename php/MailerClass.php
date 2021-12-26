@@ -86,7 +86,7 @@ class MailerClass {
     public function sendClosingEmail($recipient)
     {
         $subject = SITE_TITLE." closing";
-        $body = "Hey, $recipient, will be closed on May 1, 2022. After this date, you will not be able to use the funds in your account, since all coins remaining in the account by this time will be burned. Please WITHDRAW your coins as soon as possible. If you have any problems with the exchange or withdrawal of funds, please immediately write to support@usoamic.io, or to the thread on BitcoinTalk, we will try to answer you within 2-3 days.";
+        $body = "Hey, $recipient!<br><a href='".SITE_URL."'>".SITE_TITLE."</a> will be closed on May 1, 2022. After this date, you will not be able to use the funds in your account, since all coins remaining in the account by this time will be burned. Please WITHDRAW your coins as soon as possible. If you have any problems with the exchange or withdrawal of funds, please immediately write to support@usoamic.io, or to the thread on BitcoinTalk, we will try to answer you within 2-3 days.";
 
         if(!$this->sendMail($recipient, $subject,  $body))
         {
