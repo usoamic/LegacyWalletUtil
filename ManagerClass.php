@@ -24,8 +24,12 @@ class ManagerClass
         return $this->prepareTransactions($transactions);
     }
 
+    public function getAllAccounts($key = "", $value = "") {
+        return $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn tfa_status");
+    }
+
     public function getAccounts($key = "", $value = "") {
-        $accounts = $this->db->getRows(USERS_TABLE, $key, $value, "email received withdrawn tfa_status");
+        $accounts = $this->getAllAccounts($key, $value);
         $arr = array();
         $balance = 0;
         foreach ($accounts as $item) {
@@ -93,6 +97,19 @@ class ManagerClass
         }
 
         return $allBalance;
+    }
+
+    public function sendClosingEmails() {
+        $accounts = $this->getAllAccounts();
+
+        foreach($accounts as $acc) {
+            $email = $acc["email"];
+            $this->mailer->sendClosingEmail($email);
+            print_r("Sent mail to $email\n");
+            $sleep = rand(150, 1200);
+            print_r("Waiting $sleep...");
+            sleep($sleep);
+        }
     }
 
     private function prepareTransactions($withdrawals) {

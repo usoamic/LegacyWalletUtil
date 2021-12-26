@@ -1,0 +1,15 @@
+<?php
+require_once("defines.php");
+require_once("php/other/consts.php");
+require_once("php/libs/cfunctions.php");
+require_once("php/libs/Telegram.php");
+require_once("php/libs/TelegramNotifier.php");
+require_once("php/libs/Coin.php");
+require_once("php/libs/EncryptionClass.php");
+require_once("php/libs/DBClass.php");
+require_once("php/libs/NotifierClass.php");
+require_once("php/TFAClass.php");
+require_once("php/AuthorizationClass.php");
+require_once("php/AccountTFA.php");
+require_once("php/AccountClass.php");
+require_once('ManagerClass.php');
