@@ -102,14 +102,17 @@ class ManagerClass
     public function sendClosingEmails() {
         $accounts = $this->getAllAccounts();
 
-        foreach($accounts as $acc) {
+        foreach($accounts as $id => $acc) {
             $email = $acc["email"];
             $this->mailer->sendClosingEmail($email);
-            print_r("Sent mail to $email\n");
+            print_r("$id. Sent mail to $email.\n");
             $sleep = rand(150, 1200);
-            print_r("Waiting $sleep...");
+            print_r("Waiting $sleep...\n");
             sleep($sleep);
         }
+        $count = count($accounts);
+
+        print_r("Accounts finished($count)\n");
     }
 
     private function prepareTransactions($withdrawals) {
