@@ -233,7 +233,11 @@ function isset_session($var) {
 }
 
 function die_redirect($error = UNKNOWN_ERROR) {
-    die('error: '.get_string($error));
+    die_error(get_string($error));
+}
+
+function die_error($msg) {
+    die('error: '.$msg);
 }
 
 function get_url() {

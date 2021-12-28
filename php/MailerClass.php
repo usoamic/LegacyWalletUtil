@@ -10,7 +10,6 @@ class MailerClass {
     /*
      * Public
      */
-
     public function sendResetPasswordLink($email, $code)
     {
         $link = get_url().'/?reset_code='.urlencode($code);
@@ -20,12 +19,8 @@ class MailerClass {
         $body = 'Hello!<br>Someone has requested a link to change your password, and you can do this through the link below:<br>'.$link."<br>
                 If you didn't request this, please ignore this email<br>
                 Your password won't change until you access the link above and create a new one<br>";
-        if(!$this->sendMail($email, $subject, $body))
-        {
-            die_redirect();
-            return false;
-        }
-        return true;
+
+        return $this->sendMail($email, $subject, $body);
     }
 
     public function sendResetTfaMail($email)
@@ -36,12 +31,7 @@ class MailerClass {
                  Someone has requested a 2fa key reset.<br>
                  If you didn't request this, please urgently write to support@usoamic.io.";
 
-        if(!$this->sendMail($email, $subject, $body))
-        {
-            die_redirect();
-            return false;
-        }
-        return true;
+        return $this->sendMail($email, $subject, $body);
     }
 
     public function sendLoginMail($email, $ip, $browserData) {
@@ -49,11 +39,7 @@ class MailerClass {
         $browser = get_if_not_empty($browserData['name'])." ".$browserData['version'];
         $body = "Hello!<br>Successful login to ".SITE_TITLE." from IP ".$ip." through ".$browser.".<br>";
 
-        if(!$this->sendMail($email, $subject,  $body))
-        {
-            return false;
-        }
-        return true;
+        return $this->sendMail($email, $subject, $body);
     }
 
     public function sendNewPassword($email, $password)
@@ -62,12 +48,7 @@ class MailerClass {
                  Here is your new password: ".$password."<br>";
         $subject = "Your new password for ".SITE_TITLE;
 
-        if(!$this->sendMail($email, $subject, $body))
-        {
-            die_redirect();
-            return false;
-        }
-        return true;
+        return $this->sendMail($email, $subject, $body);
     }
 
     public function sendUserConfirmationEmail($email, $code)
@@ -75,12 +56,8 @@ class MailerClass {
         $subject = SITE_TITLE." account confirmation";
         $confirm_url = get_url().'/?confirm_code='.$code;
         $body ="Hello!<br>Please confirm your email address by following link: <br>".$confirm_url;
-        if(!$this->sendMail($email, $subject,  $body))
-        {
-            die_redirect();
-            return false;
-        }
-        return true;
+
+        return $this->sendMail($email, $subject, $body);
     }
 
     public function sendClosingEmail($recipient)
@@ -88,18 +65,12 @@ class MailerClass {
         $subject = SITE_TITLE." closing";
         $body = "Hey, $recipient!<br><a href='".SITE_URL."'>".SITE_TITLE."</a> will be closed on May 1, 2022. After this date, you will not be able to use the funds in your account, since all coins remaining in the account by this time will be burned. Please WITHDRAW your coins as soon as possible. If you have any problems with the exchange or withdrawal of funds, please immediately write to support@usoamic.io, or to the thread on BitcoinTalk, we will try to answer you within 2-3 days.";
 
-        if(!$this->sendMail($recipient, $subject,  $body))
-        {
-            die_redirect();
-            return false;
-        }
-        return true;
+        return $this->sendMail($recipient, $subject, $body);
     }
 
     /*
      * Private
      */
-
     private function sendMail($email, $subject, $content)
     {
         $mailer = new PHPMailer;
@@ -124,8 +95,13 @@ class MailerClass {
         $mailer->Body = $content;
         $mailer->AltBody = $altbody;
 
-        if (!$mailer->send()) {
-            die_redirect();
+        try {
+            if (!$mailer->send()) {
+                die_error($mailer->ErrorInfo);
+                return false;
+            }
+        } catch (phpmailerException $e) {
+            die_error($e->getMessage());
             return false;
         }
         return true;
