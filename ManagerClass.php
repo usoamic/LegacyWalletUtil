@@ -102,10 +102,11 @@ class ManagerClass
     public function sendClosingEmails() {
         $accounts = $this->getAllAccounts();
 
-        foreach($accounts as $id => $acc) {
+        for($i = 0; $i < count($accounts); $i++) {
+            $acc = $accounts[$i];
             $email = $acc["email"];
             $this->mailer->sendClosingEmail($email);
-            print_r("$id. Sent mail to $email.\n");
+            print_r("$i. Sent mail to $email.\n");
             $sleep = rand(150, 1200);
             print_r("Waiting $sleep...\n");
             sleep($sleep);
