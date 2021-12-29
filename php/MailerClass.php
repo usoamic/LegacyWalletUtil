@@ -97,11 +97,11 @@ class MailerClass {
 
         try {
             if (!$mailer->send()) {
-                die_error($mailer->ErrorInfo);
+                print_r("sendMailError: ".$mailer->ErrorInfo."\n");
                 return false;
             }
         } catch (phpmailerException $e) {
-            die_error($e->getMessage());
+            print_r("sendMailError: ".$e->getMessage()."\n");
             return false;
         }
         return true;
