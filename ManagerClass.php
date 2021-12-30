@@ -104,12 +104,20 @@ class ManagerClass
 
         for($i = 0; $i < count($accounts); $i++) {
             $acc = $accounts[$i];
-            $email = $acc["email"];
-            $this->mailer->sendClosingEmail($email);
-            print_r("$i. Sent mail to $email.\n");
-            $sleep = rand(150, 1200);
-            print_r("Waiting $sleep...\n");
-            sleep($sleep);
+
+            if(!empty($item['received'])) {
+                $received = $item['received'];
+                $userBalance = Coin::toCoin($received);
+
+                if ($userBalance > 1) {
+                    $email = $acc["email"];
+                    $this->mailer->sendClosingEmail($email);
+                    print_r("$i. Sent mail to $email.\n");
+                    $sleep = rand(150, 1200);
+                    print_r("Waiting $sleep...\n");
+                    sleep($sleep);
+                }
+            }
         }
         $count = count($accounts);
 
