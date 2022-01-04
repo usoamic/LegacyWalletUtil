@@ -105,8 +105,8 @@ class ManagerClass
         for($i = 0; $i < count($accounts); $i++) {
             $acc = $accounts[$i];
 
-            if(!empty($item['received'])) {
-                $received = $item['received'];
+            if(!empty($acc['received'])) {
+                $received = $acc['received'];
                 $userBalance = Coin::toCoin($received);
 
                 if ($userBalance > 1) {
